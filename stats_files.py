@@ -73,9 +73,9 @@ class Stats:
 				self.allTypeFile.write(str(allProps[t])+",") 
 
 		#print sum(payList)
-		print("len(agents):",len(agents))
-		print("coopPerc:",coopPerc)
-		print("punPerc:",punPerc)
+		#print("len(agents):",len(agents))
+		#print("coopPerc:",coopPerc)
+		#print("punPerc:",punPerc)
 		self.statsFile.write(str(sum(payList))+","+str(coopPerc)+","+str(punPerc)+","+str(percAlive)+"\n")
 
 		self.lastPays = payList		

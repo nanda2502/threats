@@ -35,10 +35,12 @@ rho = 3.0/2		# fine applied by individual punishment
 GAMEMATRIX = [ [(b-c,b-c),(-c,b)] , [(b,-c),(0,0)] ]
 #GAMEMATRIX = [ [(2,2),(0,1)] , [(1,0),(1,1)] ]
 
-severity = float(sys.argv[1])
+threat = float(sys.argv[1])
 probability = float(sys.argv[2])
 replicateSim = float(sys.argv[3])
 basePayoff = 30
+
+print(f"threat: {threat}, probability: {probability}, replicateSim: {replicateSim}")
 
 infoLevel = 1 #0.7#1#0.6#"auto" # probability of knowing co-player's punishment behavior
 e = 0 #0.05# 0.05#0.10 #05		# probability that knowledge is incorrect
@@ -70,7 +72,7 @@ for i in range(len(punTypes)):
 	pTypeToInt[punTypes[i]] = i
 
 runId = "test2PG_b" + str(b) + "c" + str(c) + "l" + str(l)+"rho"+str(rho)+"i"+str(infoLevel)+"e"+str(e)+"mu"+str(mu) + \
-		"death" + str(deathrate) + "im" + str(imRate) + "bP" + str(basePayoff) + "tau" + str(severity) + "p" + str(probability) + "repl"+ str(replicateSim) # str(sys.argv[2]
+		"death" + str(deathrate) + "im" + str(imRate) + "bP" + str(basePayoff) + "tau" + str(threat) + "p" + str(probability) + "repl"+ str(replicateSim) # str(sys.argv[2]
 
 #runId = "2PG+_staghunt"+str(l)+"rho"+str(rho)+"i"+str(infoLevel)+"e"+str(e)+"mu"+str(mu)+"death"+str(deathrate)+"im"+str(imRate) \
 #			+"bP"+str(basePayoff)+"t"+str(threat)+str(sys.argv[2])
@@ -164,21 +166,22 @@ def step():
 		# give agent chance (ptr) to clone into a random open adjacent spot, if it exists
 		emptyAdjacent = [loc for loc in grid.neighborLocs[agent.gridlocation] if grid.agentMatrix[loc[0]][loc[1]] == None]
 		if emptyAdjacent:
-			if rnd.random() < fitness(agent.total_payoff() + basePayoff):
+			if rnd.random() < fitness(basePayoff):
 				newAgent = makeAgentOfType(agent.agent_type)
 				grid.place_agent(newAgent, rnd.choice(emptyAdjacent))
 				addedAgents.append(newAgent)
 	agents.extend(addedAgents)
 	
-	##### death
-	### this is where the threat should move to [Experiment 3]
-	for agent in agents:
-		if rnd.random() < probability:
-			agent.total_payoff() - ypsilon(severity, probability)
-		if rnd.random() < fitness(agent.total_payoff() + basePayoff):
-			agents.remove(agent)
-			grid.remove_agent(agent)
+	severity = threat/probability
 
+	##### death
+	for agent in agents:
+		# if the threat occurs, subtract from agent's payoff
+		if rnd.random() < probability:
+			deathchance = (1 - death(agent.total_payoff() - severity))
+			if rnd.random() < deathchance:
+				agents.remove(agent)
+				grid.remove_agent(agent)
 
 	percAlive = len(agents)/float(n*n)
 
@@ -201,8 +204,8 @@ def sigmoidFitness(payoff):
 def fitness(payoff):
 	return (1.0 - math.e**(-0.1*payoff))
 
-def ypsilon(severity, probability):
-    return(severity / probability)
+def death(payoff):
+	return (1/(1 + math.e**(payoff)))
 
 def setContMatrix(agents, M):
 	for agent in agents:
