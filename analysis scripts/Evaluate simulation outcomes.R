@@ -1,4 +1,4 @@
-setwd('../results')
+setwd('C://Users/Nanda/Desktop/threats/results')
 figures_path <- "../figures"
 png(filename=paste(figures_path, "/contribution_strategies.png", sep=""), width=800, height=600)
 showIndRuns<-1
