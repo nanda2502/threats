@@ -1,3 +1,6 @@
+
+
+
 setwd("C:/Users/Nanda/Desktop/threats/results")
 figures_path <- "../figures"
 showIndRuns <- 1
@@ -26,13 +29,13 @@ for (probability in probabilities) {
   
   # Plot for cooperation strategies
   plot(x, x*0, type = 'n', ylim = c(0,1),
-       xlab = 'Threat level', ylab = 'Long term average pop. proportion', 
+       xlab = 'Threat level \u03C4', ylab = 'Long term average pop. proportion', 
        main = paste('Contribution Strategies (p =', probability, ')'))
   
   for (threat in threats){
     CC <- DD <- OO <- numeric()
     for (repl in 1:3){
-      na <- paste('contProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
+      na <- paste('contProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.1death0.1im1bP30tau', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
       a <- if(file.exists(na)) {
         read.table(na, header = TRUE, sep = ',')
         }else data.frame(C=NA, D=NA, Oc=NA, Od=NA)
@@ -51,7 +54,6 @@ for (probability in probabilities) {
     Ds <- c(Ds, mean(DD, na.rm = TRUE))
     Os <- c(Os, mean(OO, na.rm = TRUE))
   }
-  
   lines(x, Cs, lty = 2, col = 'blue')
   points(x, Cs, pch = 24, bg = 'blue', col = 'black')
   lines(x, Ds, lty = 2, col = 'red')
@@ -62,23 +64,47 @@ for (probability in probabilities) {
   legend('topleft', c('C', 'D', 'O'), lty = c(2,2,2), 
          col = c('black'), cex = c(1,1,1),
          pch = c(24, 25, 23), pt.bg = c('blue', 'red', 'purple'))
+  # Calculate and plot cooperation percentage
+  for (threat in threats){
+    coopcoop <- numeric() # Reset for each threat level
+    for (repl in 1:3){
+      na <- paste('stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.1death0.1im1bP30tau', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
+      if (file.exists(na)){
+        a <- read.table(na, header = TRUE, sep = ',')
+        coopperc <- mean(a$coopPerc, na.rm = TRUE) 
+        coopcoop <- c(coopcoop, coopperc)
+        if(showIndRuns == 1){
+          points(threat - 1 + runif(1) * 2, coopperc, pch = 16, col = 'black', cex = 0.5)
+        }
+      }
+    }
+    coop <- c(coop, mean(coopcoop, na.rm = TRUE))
+  }
+  lines(x, coop, lty = 3, col = 'black')
+  points(x, coop, pch = 19, col = 'black', cex = 1.5)
   
+  # Add coop% legend entry
+  legend('topleft', c('C', 'D', 'O', '%Coop'), lty = c(2,2,2,3), 
+         col = c('black'), cex = c(1,1,1,1), 
+         pch = c(24, 25, 23, 19), pt.bg = c('blue', 'red', 'purple', NA))
+  # This prepares for the punishment strategies plot
+  Rs <- As <- Ss <- Ns <- numeric()
   Rs <- As <- Ss <- Ns <- numeric()
   # Plot for punishment strategies
   plot(x, x*0, type = 'n', ylim = c(0,1), 
-       xlab = 'Threat level', ylab = '', main = paste('Punishment Strategies (p =', probability, ')'))
+       xlab = 'Threat level \u03C4', ylab = '', main = paste('Punishment Strategies (p =', probability, ')'))
   
   for (threat in threats){
     RR <- AA <- SS <- NN <- numeric()
     for (repl in 1:3){
-      na <- paste('punProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
+      na <- paste('punProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.1death0.1im1bP30tau', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
       a <- if(file.exists(na)) read.table(na, header = TRUE, sep = ',') else data.frame(R=NA, A=NA, S=NA, N=NA)
       
       if(showIndRuns == 1 && nrow(a) > 0){
         points(threat - 1 + runif(1) * 2, mean(a$R), bg = 'forestgreen', pch = 24, col = 'black', cex = 0.5)
-        points(threat - 1 + runif(1) * 2, mean(a$A), bg = 'deepskyblue', pch = 22, col = 'black', cex = 0.5)
-        points(threat - 1 + runif(1) * 2, mean(a$S), bg = 'violet', pch = 23, col = 'black', cex = 0.5)
-        points(threat - 1 + runif(1) * 2, mean(a$N), bg = 'firebrick', pch = 25, col = 'black', cex = 0.5)
+        points(threat - 1 + runif(1) * 2, mean(a$N), bg = 'deepskyblue', pch = 22, col = 'black', cex = 0.5)
+        points(threat - 1 + runif(1) * 2, mean(a$A), bg = 'darkorange', pch = 23, col = 'black', cex = 0.5)
+        points(threat - 1 + runif(1) * 2, mean(a$S), bg = 'violet', pch = 25, col = 'black', cex = 0.5)
       }
       RR <- c(RR, mean(a$R, na.rm = TRUE))
       AA <- c(AA, mean(a$A, na.rm = TRUE))
@@ -93,19 +119,17 @@ for (probability in probabilities) {
   
   lines(x, Rs, col = 'forestgreen', lty = 2)
   points(x, Rs, pch = 24, bg = 'forestgreen', col = 'black')
-  lines(x, As, lty = 2, col = 'deepskyblue')
-  points(x, As, pch = 22, bg = 'deepskyblue', col = 'black')
+  lines(x, Ns, lty = 2, col = 'deepskyblue')
+  points(x, Ns, pch = 22, bg = 'deepskyblue', col = 'black')
+  lines(x, As, lty = 2, col = 'darkorange')
+  points(x, As, pch = 25, bg = 'darkorange', col = 'black')
   lines(x, Ss, lty = 2, col = 'violet')
   points(x, Ss, pch = 23, bg = 'violet', col = 'black')
-  lines(x, Ns, lty = 2, col = 'firebrick')
-  points(x, Ns, pch = 25, bg = 'firebrick', col = 'black')
   
-  legend('topleft', c('R', 'A', 'S', 'N'), lty = c(2,2,2,2), 
-         col = c('forestgreen', 'deepskyblue', 'violet', 'firebrick'), 
-         pch = c(24, 22, 23, 25), pt.bg = c('forestgreen', 'deepskyblue', 'violet', 'firebrick'))
+  legend('topleft', c('R', 'N', 'A', 'S'), lty = c(2,2,2,2), 
+         col = c('forestgreen', 'deepskyblue', 'darkorange', 'violet'), 
+         pch = c(24, 22, 23, 25), pt.bg = c('forestgreen', 'deepskyblue', 'darkorange', 'violet'))
   
   dev.off()
 }
-
-dev.off()
 
