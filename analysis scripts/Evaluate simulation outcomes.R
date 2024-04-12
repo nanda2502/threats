@@ -1,7 +1,7 @@
 
 
 
-setwd("C:/Users/Nanda/Desktop/threats/results")
+setwd("C:/Users/Nanda/Desktop/threats/results - Copy")
 figures_path <- "../figures"
 showIndRuns <- 1
 
@@ -35,7 +35,7 @@ for (probability in probabilities) {
   for (threat in threats){
     CC <- DD <- OO <- numeric()
     for (repl in 1:3){
-      na <- paste('contProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.1death0.1im1bP30tau', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
+      na <- paste('contProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
       a <- if(file.exists(na)) {
         read.table(na, header = TRUE, sep = ',')
         }else data.frame(C=NA, D=NA, Oc=NA, Od=NA)
@@ -68,7 +68,7 @@ for (probability in probabilities) {
   for (threat in threats){
     coopcoop <- numeric() # Reset for each threat level
     for (repl in 1:3){
-      na <- paste('stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.1death0.1im1bP30tau', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
+      na <- paste('stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
       if (file.exists(na)){
         a <- read.table(na, header = TRUE, sep = ',')
         coopperc <- mean(a$coopPerc, na.rm = TRUE) 
@@ -97,7 +97,7 @@ for (probability in probabilities) {
   for (threat in threats){
     RR <- AA <- SS <- NN <- numeric()
     for (repl in 1:3){
-      na <- paste('punProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.1death0.1im1bP30tau', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
+      na <- paste('punProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
       a <- if(file.exists(na)) read.table(na, header = TRUE, sep = ',') else data.frame(R=NA, A=NA, S=NA, N=NA)
       
       if(showIndRuns == 1 && nrow(a) > 0){

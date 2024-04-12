@@ -48,7 +48,7 @@ e = 0 #0.05# 0.05#0.10 #05		# probability that knowledge is incorrect
 imRate = 1		# immigration rate - how many immigrants to add each step
 deathrate = 0.10 # probability of death
 
-mu = 0.1		# exploration rate
+mu = 0.01		# exploration rate
 
 neighborhood = [(-1,0),		# agents will interact with others in this neighborhood of x, y offsets
 				(0,-1),
