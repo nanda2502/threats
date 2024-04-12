@@ -201,9 +201,6 @@ def sigmoidFitness(payoff):
 def fitness(payoff):
 	return (1.0 - math.e**(-0.1*payoff))
 
-def death_chance(severity, probability, payoff):
-
-
 def setContMatrix(agents, M):
 	for agent in agents:
 		(x,y) = agent.gridlocation
