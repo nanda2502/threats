@@ -39,15 +39,13 @@ threat = float(sys.argv[1])
 replicateSim = float(sys.argv[2])
 basePayoff = 30
 
-p = [0.1, 0.3, 0.5, 0.7]
-
 infoLevel = 1 #0.7#1#0.6#"auto" # probability of knowing co-player's punishment behavior
 e = 0 #0.05# 0.05#0.10 #05		# probability that knowledge is incorrect
 
 imRate = 1		# immigration rate - how many immigrants to add each step
-deathrate = 0.10 # probability of death
+reproductionrate = 0.90 # probability of reproduction
 
-mu = 0.01		# exploration rate
+mu = 0.1		# exploration rate
 
 neighborhood = [(-1,0),		# agents will interact with others in this neighborhood of x, y offsets
 				(0,-1),
@@ -166,7 +164,7 @@ def step():
 		emptyAdjacent = [loc for loc in grid.neighborLocs[agent.gridlocation] if grid.agentMatrix[loc[0]][loc[1]] == None]
 		if emptyAdjacent:
 			#### this is where the threat is currently implemented!
-			if rnd.random() < fitness(agent.total_payoff() + basePayoff - threat):
+			if rnd.random() > reproductionrate:
 				newAgent = makeAgentOfType(agent.agent_type)
 				grid.place_agent(newAgent, rnd.choice(emptyAdjacent))
 				addedAgents.append(newAgent)
@@ -175,7 +173,7 @@ def step():
 	##### death
 	### this is where the threat should move to [Experiment 3]
 	for agent in agents:
-		if rnd.random() < deathrate:
+		if rnd.random() > fitness(agent.total_payoff() + basePayoff - threat):
 			agents.remove(agent)
 			grid.remove_agent(agent)
 
@@ -200,9 +198,6 @@ def sigmoidFitness(payoff):
 
 def fitness(payoff):
 	return (1.0 - math.e**(-0.1*payoff))
-
-def death_chance(severity, probability, payoff):
-
 
 def setContMatrix(agents, M):
 	for agent in agents:
