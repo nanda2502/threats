@@ -172,13 +172,13 @@ def step():
 				addedAgents.append(newAgent)
 	agents.extend(addedAgents)
 	
-	severity = threat/probability
+	severity = threat/probability 
 
 	##### death
 	for agent in agents:
 		# if the threat occurs, subtract from agent's payoff
 		if rnd.random() < probability:
-			deathchance = (1 - death(agent.total_payoff() - severity))
+			deathchance = death(agent.total_payoff() - severity)
 			if rnd.random() < deathchance:
 				agents.remove(agent)
 				grid.remove_agent(agent)
