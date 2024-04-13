@@ -47,7 +47,7 @@ e = 0 #0.05# 0.05#0.10 #05		# probability that knowledge is incorrect
 
 imRate = 1		# immigration rate - how many immigrants to add each step
 deathrate = 0.10 # probability of death
-
+reproductionrate = 1 - deathrate
 mu = 0.01		# exploration rate
 
 neighborhood = [(-1,0),		# agents will interact with others in this neighborhood of x, y offsets
@@ -166,7 +166,7 @@ def step():
 		# give agent chance (ptr) to clone into a random open adjacent spot, if it exists
 		emptyAdjacent = [loc for loc in grid.neighborLocs[agent.gridlocation] if grid.agentMatrix[loc[0]][loc[1]] == None]
 		if emptyAdjacent:
-			if rnd.random() < fitness(basePayoff):
+			if rnd.random() < reproductionrate:
 				newAgent = makeAgentOfType(agent.agent_type)
 				grid.place_agent(newAgent, rnd.choice(emptyAdjacent))
 				addedAgents.append(newAgent)
@@ -178,10 +178,12 @@ def step():
 	for agent in agents:
 		# if the threat occurs, subtract from agent's payoff
 		if rnd.random() < probability:
-			deathchance = (1 - death(agent.total_payoff() - severity))
-			if rnd.random() < deathchance:
-				agents.remove(agent)
-				grid.remove_agent(agent)
+			deathchance = death(agent.total_payoff() + basePayoff - severity)
+		else: 
+			deathchance = death(agent.total_payoff() + basePayoff)
+		if rnd.random() < deathchance:
+			agents.remove(agent)
+			grid.remove_agent(agent)
 
 	percAlive = len(agents)/float(n*n)
 
