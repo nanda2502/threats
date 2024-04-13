@@ -392,6 +392,8 @@ if __name__ == "__main__":
 		pycxsimulator.GUI().start(func=[init,draw,step])
 	else:
 		init()
+		if time%500 == 0:
+			print("time:", time)
 		while time < num_gens:
 			step()
 		stats.close_files()
