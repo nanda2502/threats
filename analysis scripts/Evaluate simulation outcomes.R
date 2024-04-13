@@ -29,7 +29,7 @@ for (probability in probabilities) {
   
   # Plot for cooperation strategies
   plot(x, x*0, type = 'n', ylim = c(0,1),
-       xlab = 'Threat level \u03C4', ylab = 'Long term average pop. proportion', 
+       xlab = 'Threat severity \u03C4', ylab = 'Long term average pop. proportion', 
        main = paste('Contribution Strategies (p =', probability, ')'))
   
   for (threat in threats){
@@ -92,7 +92,7 @@ for (probability in probabilities) {
   Rs <- As <- Ss <- Ns <- numeric()
   # Plot for punishment strategies
   plot(x, x*0, type = 'n', ylim = c(0,1), 
-       xlab = 'Threat level \u03C4', ylab = '', main = paste('Punishment Strategies (p =', probability, ')'))
+       xlab = 'Threat severity \u03C4', ylab = '', main = paste('Punishment Strategies (p =', probability, ')'))
   
   for (threat in threats){
     RR <- AA <- SS <- NN <- numeric()
