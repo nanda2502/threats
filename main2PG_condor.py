@@ -172,7 +172,7 @@ def step():
 				addedAgents.append(newAgent)
 	agents.extend(addedAgents)
 	
-	severity = threat/probability
+	severity = threat/probability 
 
 	##### death
 	for agent in agents:
