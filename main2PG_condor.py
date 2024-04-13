@@ -207,7 +207,7 @@ def fitness(payoff):
 	return (1.0 - math.e**(-0.1*payoff))
 
 def death(payoff):
-	return (1/(1 + math.e**(payoff)))
+	return (math.e**(-0.1*payoff))
 
 def setContMatrix(agents, M):
 	for agent in agents:
