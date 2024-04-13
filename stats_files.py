@@ -36,7 +36,7 @@ class Stats:
 				self.punTypeFile.write(p+",")	
 
 		self.allTypeFile = open("./results/allProps_"+str(runID)+".txt",'w')
-		print(f"writing file {str(runID)}")
+		
 		for t in types:
 			if t == types[-1]:
 				self.allTypeFile.write(t+"\n")

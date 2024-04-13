@@ -1,4 +1,4 @@
-setwd("C:/Users/Nanda/Desktop/threats/results - Copy")
+setwd("C:/Users/Nanda/Desktop/threats/results")
 figures_path <- "../figures"
 showIndRuns <- 1
 
@@ -32,7 +32,7 @@ for (probability in probabilities) {
   for (threat in threats){
     CC <- DD <- OO <- numeric()
     for (repl in 1:3){
-      na <- paste('contProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
+      na <- paste('contProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau', threat, 'p', probability, 'repl', repl, '.txt', sep = '')
       a <- if(file.exists(na)) {
         read.table(na, header = TRUE, sep = ',')
         }else data.frame(C=NA, D=NA, Oc=NA, Od=NA)
@@ -65,7 +65,7 @@ for (probability in probabilities) {
   for (threat in threats){
     coopcoop <- numeric() # Reset for each threat level
     for (repl in 1:3){
-      na <- paste('stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
+      na <- paste('stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau', threat, 'p', probability, 'repl', repl, '.txt', sep = '')
       if (file.exists(na)){
         a <- read.table(na, header = TRUE, sep = ',')
         coopperc <- mean(a$coopPerc, na.rm = TRUE) 
@@ -73,7 +73,7 @@ for (probability in probabilities) {
         if(showIndRuns == 1){
           points(threat - 1 + runif(1) * 2, coopperc, pch = 16, col = 'black', cex = 0.5)
         }
-      }
+      }else print(paste('File not found:', na))
     }
     coop <- c(coop, mean(coopcoop, na.rm = TRUE))
   }
@@ -94,9 +94,11 @@ for (probability in probabilities) {
   for (threat in threats){
     RR <- AA <- SS <- NN <- numeric()
     for (repl in 1:3){
-      na <- paste('punProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
-      a <- if(file.exists(na)) read.table(na, header = TRUE, sep = ',') else data.frame(R=NA, A=NA, S=NA, N=NA)
-      
+      na <- paste('punProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau', threat, 'p', probability, 'repl', repl, '.txt', sep = '')
+      a <- if(file.exists(na)) read.table(na, header = TRUE, sep = ',') else {
+        data.frame(R=NA, A=NA, S=NA, N=NA)
+        print(paste('File not found:', na))
+      }
       if(showIndRuns == 1 && nrow(a) > 0){
         points(threat - 1 + runif(1) * 2, mean(a$R), bg = 'forestgreen', pch = 24, col = 'black', cex = 0.5)
         points(threat - 1 + runif(1) * 2, mean(a$N), bg = 'deepskyblue', pch = 22, col = 'black', cex = 0.5)
@@ -159,3 +161,7 @@ for (i in 1:length(probabilities)) {
   final_plot <- magick::image_annotate(final_plot, letters[i], location = location_str, size = 50, color = "black")
 }
 magick::image_write(final_plot, "../figures/composite_plot.png")
+
+
+stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau0p0.1repl1.txt
+stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau0p0.1repl1.txt
