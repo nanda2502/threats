@@ -71,7 +71,7 @@ points(x, Os, pch=23, bg='purple', col='black')
 
 legend('topleft', c('C', 'D', 'O', '% coop'), lty=c(3,2,2,2), 
 	col=c('black'), cex=c(1,1,1,1),
-	pch=c(24, 25, 23, 16), pt.bg=c('blue', 'red', 'purple', 'black'))
+	pch=c(24, 25, 23, 19), pt.bg=c('blue', 'red', 'purple', 'black'))
 
 
 #### punishment strategies
@@ -101,10 +101,10 @@ for (threat in 0:6*5){
 		NN<-c(NN, mN)
 		
 		if (showIndRuns==1){
-			points(threat-1+runif(1)*2, mR, bg='forestgreen', pch=24, col='black', cex=0.5)
-			points(threat-1+runif(1)*2, mA, bg='deepskyblue', pch=22, col='black', cex=0.5)
-			points(threat-1+runif(1)*2, mS, bg='violet', pch=23, col='black', cex=0.5)
-			points(threat-1+runif(1)*2, mN, bg='firebrick', pch=25, col='black', cex=0.5)
+		        points(threat - 1 + runif(1) * 2, mean(a$R), bg = 'forestgreen', pch = 24, col = 'black', cex = 0.5)
+		        points(threat - 1 + runif(1) * 2, mean(a$N), bg = 'deepskyblue', pch = 22, col = 'black', cex = 0.5)
+		        points(threat - 1 + runif(1) * 2, mean(a$A), bg = 'darkorange', pch = 23, col = 'black', cex = 0.5)
+		        points(threat - 1 + runif(1) * 2, mean(a$S), bg = 'violet', pch = 25, col = 'black', cex = 0.5)
 		}
 	}
 	Rs<-c(Rs, mean(RR))
@@ -114,18 +114,18 @@ for (threat in 0:6*5){
 }
 
 
-lines(x, Rs, col='forestgreen', lty=2)
-points(x, Rs, pch=24, bg= 'forestgreen', col='black')
-lines(x, As, lty=2, col='deepskyblue')
-points(x, As, pch=22, bg='deepskyblue', col='black')
-lines(x, Ss, lty=2, col='violet')
-points(x, Ss, pch=23, bg='violet', col='black')
-lines(x, Ns, lty=2, col='firebrick')
-points(x, Ns, pch=25, bg='firebrick', col='black')
+  lines(x, Rs, col = 'forestgreen', lty = 2)
+  points(x, Rs, pch = 24, bg = 'forestgreen', col = 'black')
+  lines(x, Ns, lty = 2, col = 'deepskyblue')
+  points(x, Ns, pch = 22, bg = 'deepskyblue', col = 'black')
+  lines(x, As, lty = 2, col = 'darkorange')
+  points(x, As, pch = 25, bg = 'darkorange', col = 'black')
+  lines(x, Ss, lty = 2, col = 'violet')
+  points(x, Ss, pch = 23, bg = 'violet', col = 'black')
 
-legend('topleft', c('R', 'A', 'S', 'N'), lty=c(2,2,2,2), 
-	col=c('black'),
-	pch=c(24, 22, 23, 25), pt.bg=c('forestgreen', 'deepskyblue', 'violet', 'firebrick'))
+  legend('topleft', c('R', 'N', 'A', 'S'), lty = c(2,2,2,2), 
+         col = c('forestgreen', 'deepskyblue', 'darkorange', 'violet'), 
+         pch = c(24, 22, 23, 25), pt.bg = c('forestgreen', 'deepskyblue', 'darkorange', 'violet'))
 
 dev.off()
 
