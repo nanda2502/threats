@@ -1,132 +1,164 @@
-setwd('C://Users/Nanda/Desktop/threats/results')
+setwd("C:/Users/Nanda/Desktop/threats/results")
 figures_path <- "../figures"
-png(filename=paste(figures_path, "/contribution_strategies.png", sep=""), width=800, height=600)
-showIndRuns<-1
+showIndRuns <- 1
 
-coop<-c()
-Cs<-c()
-Ds<-c()
-Os<-c()
-Ocs<-c()
-Ods<-c()
+probabilities <- seq(0.1, 0.9, by = 0.2)
+threats <- c(0,5,10,15,20,25,30)
 
-par(mfrow=c(1,2), cex.lab=1, cex.axis=1, lend=1, las=1)
-
-x<-0:6*5
-plot(x, x*0, type='n', ylim=c(0,1),
-	xlab='Threat level', ylab='Long term average pop. proportion', 
-	main='Contribution Strategies')
-
-
-for (threat in 0:6*5){
-	## fetch cooperation levels
-	
-	CC<-c()
-	DD<-c()
-	OO<-c()
-	coopcoop<-c()
-	for (repl in 1:3){
-		na<-paste('contProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30t',  threat, '.0repl', repl, '.0.txt', sep='')
-		a<-read.table(na, header=TRUE, sep=',')
-		
-		mC<-mean(a$C); mD<-mean(a$D)
-		a$O<-a$Oc+a$Od; mO<-mean(a$O)
-		CC<-c(CC,mC)
-		DD<-c(DD,mD)
-		OO<-c(OO,mO)
-		if (showIndRuns==1){
-		points(threat-1+runif(1)*2, mC, col='black', pch=24, bg='blue', cex=0.5)
-		points(threat-1+runif(1)*2, mD, col='black', pch=25, bg='red', cex=0.5)
-		points(threat-1+runif(1)*2, mO, col='black', pch=23, bg='purple', cex=0.5)
-		}
-	}	
-	Cs<-c(Cs, mean(CC))
-	Ds<-c(Ds, mean(DD))
-#	a$O<-a$Oc+a$Od
-	Os<-c(Os, mean(OO))	
-#	Ods<-c(Ods, mean(a$Od))	
-#	Ocs<-c(Ocs, mean(a$Oc))	
-	
-	for (repl in 1:3){
-		na<-paste('stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30t',  threat, '.0repl', repl, '.0.txt', sep='')
-		a<-read.table(na, header=TRUE, sep=',')
-		meanC<-mean(a$coopPerc)
-		coopcoop<-c(coopcoop, meanC)
-#		points(threat-1+runif(1)*2, meanC, pch=16, col='black', cex=0.5)
-	}
-	coop<-c(coop, mean(coopcoop))
+# Ensure the figures_path exists or create it
+if (!dir.exists(figures_path)) {
+  dir.create(figures_path)
 }
 
-lines(x, coop, lty=3, col='black')
-points(x, coop, pch=16, col='black', cex=1.5)
-lines(x, Cs, lty=2, col= 'blue')
-points(x, Cs, pch=24, bg='blue', col='black')
-lines(x, Ds, lty=2, col='red')
-points(x, Ds, pch=25, bg='red', col='black')
-lines(x, Os, lty=2, col='purple')
-points(x, Os, pch=23, bg='purple', col='black')
-
-#points(x, Ods, pch=16, col='black')
-#points(x, Ocs, pch=17, col='green')
-
-legend('topleft', c('C', 'D', 'O', '% coop'), lty=c(3,2,2,2), 
-	col=c('black'), cex=c(1,1,1,1),
-	pch=c(24, 25, 23, 16), pt.bg=c('blue', 'red', 'purple', 'black'))
-
-
-#### punishment strategies
-
-plot(x, x*0, type='n', 
-	ylim=c(0,1), xlab='Threat level', ylab='', main='Punishment Strategies')
-
-Rs<-c()
-As<-c()
-Ss<-c()
-Ns<-c()
-for (threat in 0:6*5){
-	## fetch cooperation levels
-	RR<-c()
-	AA<-c()
-	SS<-c()
-	NN<-c()
-	
-	for (repl in 1:3){
-		na<-paste('punProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30t', threat, '.0repl', repl, '.0.txt', sep='')
-		a<-read.table(na, header=TRUE, sep=',')
-		
-		mR<-mean(a$R); mA<-mean(a$A); mS<-mean(a$S); mN<-mean(a$N)
-		RR<-c(RR, mR)
-		AA<-c(AA, mA)
-		SS<-c(SS, mS)
-		NN<-c(NN, mN)
-		
-		if (showIndRuns==1){
-			points(threat-1+runif(1)*2, mR, bg='forestgreen', pch=24, col='black', cex=0.5)
-			points(threat-1+runif(1)*2, mA, bg='deepskyblue', pch=22, col='black', cex=0.5)
-			points(threat-1+runif(1)*2, mS, bg='violet', pch=23, col='black', cex=0.5)
-			points(threat-1+runif(1)*2, mN, bg='firebrick', pch=25, col='black', cex=0.5)
-		}
-	}
-	Rs<-c(Rs, mean(RR))
-	As<-c(As, mean(AA))
-	Ss<-c(Ss, mean(SS))
-	Ns<-c(Ns, mean(NN))
+for (probability in probabilities) {
+  png(filename = paste(figures_path, sprintf("/contribution_strategies_p%g.png", probability), sep = ""), width = 800, height = 600)
+  
+  par(mfrow = c(1,2), cex.lab = 1, cex.axis = 1, lend = 1, las = 1)
+  
+  x <- 0:6 * 5
+  coop <- vector()
+  Cs <- vector()
+  Ds <- vector()
+  Os <- vector()
+  coopcoop <- vector()
+  
+  # Plot for cooperation strategies
+  plot(x, x*0, type = 'n', ylim = c(0,1),
+       xlab = 'Threat severity \u03C4', ylab = 'Long term average pop. proportion', 
+       main = paste('Contribution Strategies (p =', probability, ')'))
+  
+  for (threat in threats){
+    CC <- DD <- OO <- numeric()
+    for (repl in 1:3){
+      print(paste('Threat level:', threat, "Probability:", probability, "Replication:", repl))
+      na <- paste('contProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30t', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
+      a <- if(file.exists(na)) {
+        read.table(na, header = TRUE, sep = ',')
+      }else {
+        data.frame(C=NA, D=NA, Oc=NA, Od=NA)
+        print(paste("File not found: ", na))
+      }
+      a$O <- a$Oc + a$Od
+      if(showIndRuns == 1 && nrow(a) > 0){
+        points(threat - 1 + runif(1) * 2, mean(a$C),  col = 'black', pch = 24, bg = 'blue', cex = 0.5)
+        points(threat - 1 + runif(1) * 2, mean(a$D),  col = 'black', pch = 25, bg = 'red', cex = 0.5)
+        points(threat - 1 + runif(1) * 2, mean(a$O),  col = 'black', pch = 23, bg = 'purple', cex = 0.5)
+      }
+      CC <- c(CC, mean(a$C, na.rm = TRUE))
+      DD <- c(DD, mean(a$D, na.rm = TRUE))
+      OO <- c(OO, mean(a$O, na.rm = TRUE))
+    }
+    Cs <- c(Cs, mean(CC, na.rm = TRUE))
+    Ds <- c(Ds, mean(DD, na.rm = TRUE))
+    Os <- c(Os, mean(OO, na.rm = TRUE))
+  }
+  lines(x, Cs, lty = 2, col = 'blue')
+  points(x, Cs, pch = 24, bg = 'blue', col = 'black')
+  lines(x, Ds, lty = 2, col = 'red')
+  points(x, Ds, pch = 25, bg = 'red', col = 'black')
+  lines(x, Os, lty = 2, col = 'purple')
+  points(x, Os, pch = 23, bg = 'purple', col = 'black')
+  
+  legend('topleft', c('C', 'D', 'O'), lty = c(2,2,2), 
+         col = c('black'), cex = c(1,1,1),
+         pch = c(24, 25, 23), pt.bg = c('blue', 'red', 'purple'))
+  # Calculate and plot cooperation percentage
+  for (threat in threats){
+    coopcoop <- numeric() # Reset for each threat level
+    for (repl in 1:3){
+      na <- paste('stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30t', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
+      if (file.exists(na)){
+        a <- read.table(na, header = TRUE, sep = ',')
+        coopperc <- mean(a$coopPerc, na.rm = TRUE) 
+        coopcoop <- c(coopcoop, coopperc)
+      
+        if(showIndRuns == 1){
+          points(threat - 1 + runif(1) * 2, coopperc, pch = 16, col = 'black', cex = 0.5)
+        }
+      }
+    }
+    coop <- c(coop, mean(coopcoop, na.rm = TRUE))
+  }
+  lines(x, coop, lty = 3, col = 'black')
+  points(x, coop, pch = 19, col = 'black', cex = 1.5)
+  
+  # Add coop% legend entry
+  legend('topleft', c('C', 'D', 'O', '%Coop'), lty = c(2,2,2,3), 
+         col = c('black'), cex = c(1,1,1,1), 
+         pch = c(24, 25, 23, 19), pt.bg = c('blue', 'red', 'purple', NA))
+  # This prepares for the punishment strategies plot
+  Rs <- As <- Ss <- Ns <- numeric()
+  Rs <- As <- Ss <- Ns <- numeric()
+  # Plot for punishment strategies
+  plot(x, x*0, type = 'n', ylim = c(0,1), 
+       xlab = 'Threat level \u03C4', ylab = '', main = paste('Punishment Strategies (p =', probability, ')'))
+  
+  for (threat in threats){
+    RR <- AA <- SS <- NN <- numeric()
+    for (repl in 1:3){
+      na <- paste('punProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30t', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
+      a <- if(file.exists(na)) read.table(na, header = TRUE, sep = ',') else data.frame(R=NA, A=NA, S=NA, N=NA)
+      
+      if(showIndRuns == 1 && nrow(a) > 0){
+        points(threat - 1 + runif(1) * 2, mean(a$R), bg = 'forestgreen', pch = 24, col = 'black', cex = 0.5)
+        points(threat - 1 + runif(1) * 2, mean(a$N), bg = 'deepskyblue', pch = 22, col = 'black', cex = 0.5)
+        points(threat - 1 + runif(1) * 2, mean(a$A), bg = 'darkorange', pch = 23, col = 'black', cex = 0.5)
+        points(threat - 1 + runif(1) * 2, mean(a$S), bg = 'violet', pch = 25, col = 'black', cex = 0.5)
+      }
+      RR <- c(RR, mean(a$R, na.rm = TRUE))
+      AA <- c(AA, mean(a$A, na.rm = TRUE))
+      SS <- c(SS, mean(a$S, na.rm = TRUE))
+      NN <- c(NN, mean(a$N, na.rm = TRUE))
+    }
+    Rs <- c(Rs, mean(RR, na.rm = TRUE))
+    As <- c(As, mean(AA, na.rm = TRUE))
+    Ss <- c(Ss, mean(SS, na.rm = TRUE))
+    Ns <- c(Ns, mean(NN, na.rm = TRUE))
+  }
+  
+  lines(x, Rs, col = 'forestgreen', lty = 2)
+  points(x, Rs, pch = 24, bg = 'forestgreen', col = 'black')
+  lines(x, Ns, lty = 2, col = 'deepskyblue')
+  points(x, Ns, pch = 22, bg = 'deepskyblue', col = 'black')
+  lines(x, As, lty = 2, col = 'darkorange')
+  points(x, As, pch = 25, bg = 'darkorange', col = 'black')
+  lines(x, Ss, lty = 2, col = 'violet')
+  points(x, Ss, pch = 23, bg = 'violet', col = 'black')
+  
+  legend('topleft', c('R', 'N', 'A', 'S'), lty = c(2,2,2,2), 
+         col = c('forestgreen', 'deepskyblue', 'darkorange', 'violet'), 
+         pch = c(24, 22, 23, 25), pt.bg = c('forestgreen', 'deepskyblue', 'darkorange', 'violet'))
+  
+  dev.off()
 }
 
+plots <- list()
 
-lines(x, Rs, col='forestgreen', lty=2)
-points(x, Rs, pch=24, bg= 'forestgreen', col='black')
-lines(x, As, lty=2, col='deepskyblue')
-points(x, As, pch=22, bg='deepskyblue', col='black')
-lines(x, Ss, lty=2, col='violet')
-points(x, Ss, pch=23, bg='violet', col='black')
-lines(x, Ns, lty=2, col='firebrick')
-points(x, Ns, pch=25, bg='firebrick', col='black')
+for (i in 1:length(probabilities)){
+  probability <- probabilities[i]
+  plots[[i]] <- magick::image_read(paste('../figures/contribution_strategies_p', probability, '.png', sep = ''))
+}
 
-legend('topleft', c('R', 'A', 'S', 'N'), lty=c(2,2,2,2), 
-	col=c('black'),
-	pch=c(24, 22, 23, 25), pt.bg=c('forestgreen', 'deepskyblue', 'violet', 'firebrick'))
+row1 <- magick::image_append(c(plots[[1]], plots[[2]], plots[[3]]))
+row2 <- magick::image_append(c(plots[[4]],plots[[5]]))
 
-dev.off()
+final_plot <- magick::image_append(c(row1, row2),stack = T)
 
+x_pos <- 5
+y_pos <- 5
+x_increment <- 800 
+y_increment <- 600 
+
+# Annotating letters a-e with a loop
+letters <- c("a", "b", "c", "d", "e")
+for (i in 1:length(probabilities)) {
+  # Calculate position
+  posX <- x_pos + ((i - 1) %% 3) * x_increment
+  posY <- y_pos + ((i - 1) %/% 3) * y_increment
+  
+  location_str <- paste0("+", posX, "+", posY)
+  
+  final_plot <- magick::image_annotate(final_plot, letters[i], location = location_str, size = 50, color = "black")
+}
+magick::image_write(final_plot, "../figures/composite_plot.png")
 
