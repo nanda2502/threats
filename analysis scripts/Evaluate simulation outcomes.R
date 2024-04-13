@@ -1,6 +1,3 @@
-
-
-
 setwd("C:/Users/Nanda/Desktop/threats/results - Copy")
 figures_path <- "../figures"
 showIndRuns <- 1
@@ -133,3 +130,32 @@ for (probability in probabilities) {
   dev.off()
 }
 
+plots <- list()
+
+for (i in 1:length(probabilities)){
+  probability <- probabilities[i]
+  plots[[i]] <- magick::image_read(paste('../figures/contribution_strategies_p', probability, '.png', sep = ''))
+}
+
+row1 <- magick::image_append(c(plots[[1]], plots[[2]], plots[[3]]))
+row2 <- magick::image_append(c(plots[[4]],plots[[5]]))
+
+final_plot <- magick::image_append(c(row1, row2),stack = T)
+
+x_pos <- 5
+y_pos <- 5
+x_increment <- 800 
+y_increment <- 600 
+
+# Annotating letters a-e with a loop
+letters <- c("a", "b", "c", "d", "e")
+for (i in 1:length(probabilities)) {
+  # Calculate position
+  posX <- x_pos + ((i - 1) %% 3) * x_increment
+  posY <- y_pos + ((i - 1) %/% 3) * y_increment
+  
+  location_str <- paste0("+", posX, "+", posY)
+  
+  final_plot <- magick::image_annotate(final_plot, letters[i], location = location_str, size = 50, color = "black")
+}
+magick::image_write(final_plot, "../figures/composite_plot.png")
