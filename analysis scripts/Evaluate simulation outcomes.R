@@ -91,13 +91,13 @@ for (probability in probabilities) {
   Rs <- As <- Ss <- Ns <- numeric()
   # Plot for punishment strategies
   plot(x, x*0, type = 'n', ylim = c(0,1), 
-       xlab = 'Threat level \u03C4', ylab = '', main = paste('Punishment Strategies (p =', probability, ')'))
+       xlab = 'Threat severity \u03C4', ylab = '', main = paste('Punishment Strategies (p =', probability, ')'))
   
   for (threat in threats){
     RR <- AA <- SS <- NN <- numeric()
     for (repl in 1:3){
       na <- paste('punProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30t', threat, '.0p', probability, 'repl', repl, '.0.txt', sep = '')
-      a <- if(file.exists(na)) read.table(na, header = TRUE, sep = ',') else data.frame(R=NA, A=NA, S=NA, N=NA)
+      a <- read.table(na, header = TRUE, sep = ',') 
       
       if(showIndRuns == 1 && nrow(a) > 0){
         points(threat - 1 + runif(1) * 2, mean(a$R), bg = 'forestgreen', pch = 24, col = 'black', cex = 0.5)
