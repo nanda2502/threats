@@ -30,9 +30,10 @@ for (probability in probabilities) {
        main = paste('Contribution Strategies (p =', probability, ')'))
   
   for (threat in threats){
+    basepayoff <- round(threat/probability,0)
     CC <- DD <- OO <- numeric()
     for (repl in 1:3){
-      na <- paste('contProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau', threat, 'p', probability, 'repl', repl, '.txt', sep = '')
+      na <- paste('contProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP', basepayoff, '.0tau', threat, 'p', probability, 'repl', repl, '.txt', sep = '')
       a <- if(file.exists(na)) {
         read.table(na, header = TRUE, sep = ',')
         }else data.frame(C=NA, D=NA, Oc=NA, Od=NA)
@@ -65,7 +66,7 @@ for (probability in probabilities) {
   for (threat in threats){
     coopcoop <- numeric() # Reset for each threat level
     for (repl in 1:3){
-      na <- paste('stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau', threat, 'p', probability, 'repl', repl, '.txt', sep = '')
+      na <- paste('stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP', basepayoff, '.0tau', threat, 'p', probability, 'repl', repl, '.txt', sep = '')
       if (file.exists(na)){
         a <- read.table(na, header = TRUE, sep = ',')
         coopperc <- mean(a$coopPerc, na.rm = TRUE) 
@@ -94,7 +95,7 @@ for (probability in probabilities) {
   for (threat in threats){
     RR <- AA <- SS <- NN <- numeric()
     for (repl in 1:3){
-      na <- paste('punProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau', threat, 'p', probability, 'repl', repl, '.txt', sep = '')
+      na <- paste('punProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP', basepayoff, '.0tau', threat, 'p', probability, 'repl', repl, '.txt', sep = '')
       a <- if(file.exists(na)) read.table(na, header = TRUE, sep = ',') else {
         data.frame(R=NA, A=NA, S=NA, N=NA)
         print(paste('File not found:', na))
@@ -163,5 +164,4 @@ for (i in 1:length(probabilities)) {
 magick::image_write(final_plot, "../figures/composite_plot.png")
 
 
-stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau0p0.1repl1.txt
-stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30tau0p0.1repl1.txt
+

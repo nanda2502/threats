@@ -15,78 +15,71 @@ import public_goods_game
 import stats_files as st
 from torus import *
 from two_player_game import *
-from multiprocessing import Pool
-import itertools
+#sys.path.append("./networkx-1.7/")
+#import networkx as nx
+rnd.seed()
 
-def run_simulation(args):
-    
-	threat, probability, replicateSim = args
 
-	simulation_settings = {
-        "seed": (threat + 1) * (probability * 100) + replicateSim,
-        "GUI": False,
-        "SAVEFIGS": False,
-        "n": 50,  # nxn grid
-        "b": 3.0,  # Contribution cost multiplication factor; called r in the paper
-        "c": 1.0,  # Cost of contribution
-        "lambda": 1/2.0,  # Cost of individual punishing; called lambda in the paper
-        "rho": 3.0/2,  # Fine applied by individual punishment
-        "basePayoff": 30,
-        "infoLevel": 1,  # Probability of knowing co-player's punishment behavior
-        "e": 0,  # Probability that knowledge is incorrect
-        "imRate": 1,  # Immigration rate - how many immigrants to add each step
-        "deathrate": 0.10,  # Probability of death
-        
-        "mu": 0.01,  # Exploration rate
-        "neighborhood": [(-1, 0), (0, -1), (0, 1), (1, 0)],  # Agent interaction neighborhood
-        "num_gens": 3000,  # Number of generations
-        "types": ['C_R','C_A','C_S','C_N','D_R','D_A','D_S','D_N','Oc_R','Oc_A','Oc_S','Oc_N','Od_R','Od_A','Od_S','Od_N'],
-        "contTypes": ['C','D','Oc','Od'],
-        "punTypes": ['R','A','S','N'],
-        "threat": threat,
-        "probability": probability,
-        "replicateSim": replicateSim,
-    }
-	simulation_settings["reproductionrate"] = 1 - simulation_settings["deathrate"]
+GUI = False 
+SAVEFIGS = False 
 
-	simulation_settings["GAMEMATRIX"] = [
-        [(simulation_settings["b"] - simulation_settings["c"], simulation_settings["b"] - simulation_settings["c"]),
-         (-simulation_settings["c"], simulation_settings["b"])],
-        [(simulation_settings["b"], -simulation_settings["c"]), (0, 0)]
-    ]
-    
-	# Mapping of types to integer for plotting
-	simulation_settings["cTypeToInt"] = {ct: i for i, ct in enumerate(simulation_settings["contTypes"])}
-	simulation_settings["pTypeToInt"] = {pt: i for i, pt in enumerate(simulation_settings["punTypes"])}
-    
-	simulation_settings["runId"] = f"test2PG_b{simulation_settings['b']}c{simulation_settings['c']}l{simulation_settings['lambda']}rho{simulation_settings['rho']}i{simulation_settings['infoLevel']}e{simulation_settings['e']}mu{simulation_settings['mu']}death{simulation_settings['deathrate']}im{simulation_settings['imRate']}bP{simulation_settings['basePayoff']}tau{simulation_settings['threat']}p{simulation_settings['probability']}repl{simulation_settings['replicateSim']}"
 
-    
-	rnd.seed(simulation_settings["seed"])
-	
-	simulation_settings["stats"] = st.Stats(
-        simulation_settings['types'],
-        simulation_settings['contTypes'],
-        simulation_settings['punTypes'],
-        simulation_settings['runId']
-    )# to record statistics, e.g. counts over time
+################################# World Parameters ###################################
+n = 50 # grid is nxn
 
-	GUI = simulation_settings["GUI"]
-	n = simulation_settings["n"]
-	neighborhood = simulation_settings["neighborhood"]
-	num_gens = simulation_settings["num_gens"]
+b = 3.0 #float(sys.argv[2]) #3.5			# contribution cost multiplication factor; in the paper called r
+c = 1.0			# cost of contribution
+l = 1/2.0		# cost of individual punishing; called lambda in the paper
+rho = 3.0/2		# fine applied by individual punishment
 
-	if GUI:
-		pycxsimulator.GUI().start(func=[lambda: init(threat, probability), draw, lambda: step(threat, probability)])
-	else:
-		init(n, neighborhood)
-		while time < num_gens:
-			step(simulation_settings)
-		simulation_settings["stats"].close_files()
-		print(f"Simulation {threat}, {probability}, {replicateSim} complete.")
+GAMEMATRIX = [ [(b-c,b-c),(-c,b)] , [(b,-c),(0,0)] ]
+#GAMEMATRIX = [ [(2,2),(0,1)] , [(1,0),(1,1)] ]
+
+threat = float(sys.argv[1])
+probability = float(sys.argv[2])
+replicateSim = float(sys.argv[3])
+basePayoff = threat/probability
+
+infoLevel = 1 #0.7#1#0.6#"auto" # probability of knowing co-player's punishment behavior
+e = 0 #0.05# 0.05#0.10 #05		# probability that knowledge is incorrect
+
+imRate = 1		# immigration rate - how many immigrants to add each step
+deathrate = 0.10 # probability of death
+
+mu = 0.01		# exploration rate
+
+neighborhood = [(-1,0),		# agents will interact with others in this neighborhood of x, y offsets
+				(0,-1),
+				(0,+1),
+				(+1,0)]
+
+### number of generations
+num_gens = 3000 
+
+# agent types used in population
+types = ['C_R','C_A','C_S','C_N','D_R','D_A','D_S','D_N','Oc_R','Oc_A','Oc_S','Oc_N','Od_R','Od_A','Od_S','Od_N']
+contTypes = ['C','D','Oc','Od']
+punTypes = ['R','A','S','N']
+
+# dictionaries to map types to integer, for plotting
+cTypeToInt = {}
+for i in range(len(contTypes)):
+	cTypeToInt[contTypes[i]] = i
+pTypeToInt = {}
+for i in range(len(punTypes)):
+	pTypeToInt[punTypes[i]] = i
+
+runId = "test2PG_b" + str(b) + "c" + str(c) + "l" + str(l)+"rho"+str(rho)+"i"+str(infoLevel)+"e"+str(e)+"mu"+str(mu) + \
+		"death" + str(deathrate) + "im" + str(imRate) + "bP" + str(30) + "t" + str(threat) + "p" + str(probability) + "repl"+ str(replicateSim) # str(sys.argv[2]
+
+#runId = "2PG+_staghunt"+str(l)+"rho"+str(rho)+"i"+str(infoLevel)+"e"+str(e)+"mu"+str(mu)+"death"+str(deathrate)+"im"+str(imRate) \
+#			+"bP"+str(basePayoff)+"t"+str(threat)+str(sys.argv[2])
+
+stats = st.Stats(types, contTypes, punTypes, runId) # to record statistics, e.g. counts over time
+
 
 # ~~~~~ MAIN FUNCTIONS: INIT, DRAW, STEP ~~~~~
-def init(n, neighborhood):
+def init():
 	"""
 	Creates and initializes agents and grid.
 	"""
@@ -106,22 +99,7 @@ def init(n, neighborhood):
 	grid = Torus(n, n, neighborhood)
 	
 
-def step(simulation_settings):
-	imRate = simulation_settings["imRate"]
-	types = simulation_settings["types"]
-	mu = simulation_settings["mu"]
-	GAMEMATRIX = simulation_settings["GAMEMATRIX"]
-	l = simulation_settings["lambda"]
-	rho = simulation_settings["rho"]
-	infoLevel = simulation_settings["infoLevel"]
-	e = simulation_settings["e"]
-	reproductionrate = simulation_settings["reproductionrate"]
-	threat = simulation_settings["threat"]
-	probability = simulation_settings["probability"]
-	basePayoff = simulation_settings["basePayoff"]
-	n = simulation_settings["n"]
-
-
+def step():
 	"""
 	Steps through time period stages by Hammond and Axelrod (2006):
 	- immigration, interaction, reproduction, death.
@@ -186,28 +164,26 @@ def step(simulation_settings):
 		# give agent chance (ptr) to clone into a random open adjacent spot, if it exists
 		emptyAdjacent = [loc for loc in grid.neighborLocs[agent.gridlocation] if grid.agentMatrix[loc[0]][loc[1]] == None]
 		if emptyAdjacent:
-			if rnd.random() < reproductionrate:
+			if rnd.random() < probability:
+				cost = threat/probability
+			else:
+				cost = 0
+			if rnd.random() < fitness(agent.total_payoff() + basePayoff - cost):
 				newAgent = makeAgentOfType(agent.agent_type)
 				grid.place_agent(newAgent, rnd.choice(emptyAdjacent))
 				addedAgents.append(newAgent)
 	agents.extend(addedAgents)
 	
-	severity = threat/probability 
-
 	##### death
 	for agent in agents:
-		# if the threat occurs, subtract from agent's payoff
-		if rnd.random() < probability:
-			deathchance = death(agent.total_payoff() + basePayoff - severity)
-		else: 
-			deathchance = death(agent.total_payoff() + basePayoff)
-		if rnd.random() < deathchance:
+		if rnd.random() < deathrate:
 			agents.remove(agent)
 			grid.remove_agent(agent)
 
+
 	percAlive = len(agents)/float(n*n)
 
-	simulation_settings["stats"].step(agents, payList, coopPerc, punPerc, percAlive)	
+	stats.step(agents, payList, coopPerc, punPerc, percAlive)	
 
 	##### mobility
 	#if mobility:
@@ -226,18 +202,15 @@ def sigmoidFitness(payoff):
 def fitness(payoff):
 	return (1.0 - math.e**(-0.1*payoff))
 
-def death(payoff):
-	return (math.e**(-0.1*payoff))
-
-def setContMatrix(agents, M, simulation_settings):
+def setContMatrix(agents, M):
 	for agent in agents:
 		(x,y) = agent.gridlocation
-		M[x][y] = simulation_settings["cTypeToInt"][agent.contributionType]
+		M[x][y] = cTypeToInt[agent.contributionType]
 
-def setPunMatrix(agents, M, simulation_settings):
+def setPunMatrix(agents, M):
 	for agent in agents:
 		(x,y) = agent.gridlocation
-		M[x][y] = simulation_settings["pTypeToInt"][agent.punishmentType]
+		M[x][y] = pTypeToInt[agent.punishmentType]
 
 def setPayMatrix(agents, M):
 	for agent in agents:
@@ -415,11 +388,15 @@ def makeAgentOfType(agentType):
 
 # for running simulation using pyxcsimulator
 
-if __name__ == '__main__':
-	threat_values = range(0, 31, 5)
-	probability_values = [0.1, 0.3, 0.5, 0.7, 0.9]
-	replications = [1,2,3]
-	params_list = list(itertools.product(threat_values, probability_values, replications))
-	with Pool(15) as pool:
-		pool.map(run_simulation, params_list)
+if __name__ == "__main__":
+	if GUI:
+		pycxsimulator.GUI().start(func=[init,draw,step])
+	else:
+		init()
+		while time < num_gens:
+			step()
+		stats.close_files()
+		print(f"Finished {threat} {probability} {replicateSim}.")
+		
 			
+
