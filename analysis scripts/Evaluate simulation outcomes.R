@@ -2,7 +2,7 @@ setwd("C:/Users/Nanda/Desktop/threats/results")
 figures_path <- "../figures"
 showIndRuns <- 1
 
-probabilities <- seq(0.1, 0.9, by = 0.2)
+probabilities <- c(seq(0.1, 0.9, by = 0.2), 1)
 threats <- c(0,5,10,15,20,25,30)
 
 # Ensure the figures_path exists or create it
@@ -141,7 +141,7 @@ for (i in 1:length(probabilities)){
 }
 
 row1 <- magick::image_append(c(plots[[1]], plots[[2]], plots[[3]]))
-row2 <- magick::image_append(c(plots[[4]],plots[[5]]))
+row2 <- magick::image_append(c(plots[[4]],plots[[5]]), plots[[6]])
 
 final_plot <- magick::image_append(c(row1, row2),stack = T)
 
@@ -151,7 +151,7 @@ x_increment <- 800
 y_increment <- 600 
 
 # Annotating letters a-e with a loop
-letters <- c("a", "b", "c", "d", "e")
+letters <- c("a", "b", "c", "d", "e", "f")
 for (i in 1:length(probabilities)) {
   # Calculate position
   posX <- x_pos + ((i - 1) %% 3) * x_increment

@@ -36,10 +36,10 @@ GAMEMATRIX = [ [(b-c,b-c),(-c,b)] , [(b,-c),(0,0)] ]
 #GAMEMATRIX = [ [(2,2),(0,1)] , [(1,0),(1,1)] ]
 
 threat = float(sys.argv[1])
-probability = float(sys.argv[2])
+probability = float(sys.argv[2]) 
 replicateSim = float(sys.argv[3])
 basePayoff = threat/probability
-
+print(basePayoff)
 infoLevel = 1 #0.7#1#0.6#"auto" # probability of knowing co-player's punishment behavior
 e = 0 #0.05# 0.05#0.10 #05		# probability that knowledge is incorrect
 
@@ -169,6 +169,7 @@ def step():
 			else:
 				cost = 0
 			if rnd.random() < fitness(agent.total_payoff() + basePayoff - cost):
+				print(fitness(agent.total_payoff() + basePayoff - cost))
 				newAgent = makeAgentOfType(agent.agent_type)
 				grid.place_agent(newAgent, rnd.choice(emptyAdjacent))
 				addedAgents.append(newAgent)
