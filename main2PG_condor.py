@@ -38,7 +38,7 @@ GAMEMATRIX = [ [(b-c,b-c),(-c,b)] , [(b,-c),(0,0)] ]
 threat = float(sys.argv[1])
 probability = float(sys.argv[2])
 replicateSim = float(sys.argv[3])
-basePayoff = 30
+basePayoff = 30/probability
 
 infoLevel = 1 #0.7#1#0.6#"auto" # probability of knowing co-player's punishment behavior
 e = 0 #0.05# 0.05#0.10 #05		# probability that knowledge is incorrect
@@ -165,7 +165,7 @@ def step():
 		emptyAdjacent = [loc for loc in grid.neighborLocs[agent.gridlocation] if grid.agentMatrix[loc[0]][loc[1]] == None]
 		if emptyAdjacent:
 			if rnd.random() < probability:
-				cost = threat
+				cost = threat/probability
 			else:
 				cost = 0
 			if rnd.random() < fitness(agent.total_payoff() + basePayoff - cost):
