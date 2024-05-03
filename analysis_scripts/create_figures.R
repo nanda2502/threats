@@ -42,6 +42,29 @@ for (i in seq_along(probabilities)) {
     Ds <- c(Ds, mean(DD, na.rm = TRUE))
     Os <- c(Os, mean(OO, na.rm = TRUE))
   }
+  
+  for (threat in threats){
+    coopcoop <- numeric() # Reset for each threat level
+    for (repl in 1:3){
+      na <- paste('stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30t', threat, '.0p', prob_string, 'repl', repl, '.0.txt', sep = '')
+      if (file.exists(na)){
+        a <- read.table(na, header = TRUE, sep = ',')
+        coopperc <- mean(a$coopPerc, na.rm = TRUE) 
+        coopcoop <- c(coopcoop, coopperc)
+        if(showIndRuns == 1){
+          points(threat - 1 + runif(1) * 2, coopperc, pch = 16, col = 'black', cex = 0.5)
+        }
+      }else print(paste('File not found:', na))
+    }
+    coop <- c(coop, mean(coopcoop, na.rm = TRUE))
+  }
+  lines(x, coop, lty = 3, col = 'black')
+  points(x, coop, pch = 19, col = 'black', cex = 1.5)
+  
+  # Add coop% legend entry
+  legend('topleft', c('C', 'D', 'O', '%Coop'), lty = c(2,2,2,3), 
+         col = c('black'), cex = c(1,1,1,1), 
+         pch = c(24, 25, 23, 19), pt.bg = c('blue', 'red', 'purple', NA))
   lines(x, Cs, lty = 2, col = 'blue')
   points(x, Cs, pch = 24, bg = 'blue', col = 'black')
   lines(x, Ds, lty = 2, col = 'red')
@@ -171,4 +194,3 @@ for (prob_string in prob_strings) {
     }
   }
 }
-
