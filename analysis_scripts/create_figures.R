@@ -1,9 +1,12 @@
-setwd("C:/Users/Nanda/Desktop/threats/results")
+setwd("./results/")
 figures_path <- "../figures"
 showIndRuns <- 1
 
+options(bitmapType='cairo')
+
 probabilities <- c(seq(0.1, 0.9, by = 0.2), 1)
-threats <- c(0,5,10,15,20,25,30)
+probabilities_string <- c('0.1', '0.3', '0.5', '0.7', '0.9', '1.0')
+threats <- c(0, 5, 10, 15, 20, 25, 30)
 
 # Ensure the figures_path exists or create it
 if (!dir.exists(figures_path)) {
@@ -12,10 +15,12 @@ if (!dir.exists(figures_path)) {
 
 
 
-for (probability in probabilities) {
+for (i in 1:6) {
+  probability <- probabilities[i]
+  prob_string <- probabilities_string[i]
   png(filename = paste(figures_path, sprintf("/contribution_strategies_p%g.png", probability), sep = ""), width = 800, height = 600)
   
-  par(mfrow = c(1,2), cex.lab = 1, cex.axis = 1, lend = 1, las = 1)
+  par(mfrow = c(1, 2), cex.lab = 1, cex.axis = 1, lend = 1, las = 1)
   
   x <- 0:6 * 5
   coop <- vector()
@@ -27,13 +32,13 @@ for (probability in probabilities) {
   # Plot for cooperation strategies
   plot(x, x*0, type = 'n', ylim = c(0,1),
        xlab = 'Threat severity \u03C4', ylab = 'Long term average pop. proportion', 
-       main = paste('Contribution Strategies (p =', probability, ')'))
+       main = paste('Contribution Strategies (p =', prob_string, ')'))
   
   for (threat in threats){
     basepayoff <- round(threat/probability,0)
     CC <- DD <- OO <- numeric()
     for (repl in 1:3){
-      na <- paste('contProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP', basepayoff, '.0tau', threat, 'p', probability, 'repl', repl, '.txt', sep = '')
+      na <- paste('contProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30t', threat, '.0p', prob_string, 'repl', repl, '.0.txt', sep = '')
       a <- if(file.exists(na)) {
         read.table(na, header = TRUE, sep = ',')
         }else data.frame(C=NA, D=NA, Oc=NA, Od=NA)
@@ -66,7 +71,7 @@ for (probability in probabilities) {
   for (threat in threats){
     coopcoop <- numeric() # Reset for each threat level
     for (repl in 1:3){
-      na <- paste('stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP', basepayoff, '.0tau', threat, 'p', probability, 'repl', repl, '.txt', sep = '')
+      na <- paste('stats_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30t', threat, '.0p', prob_string, 'repl', repl, '.0.txt', sep = '')
       if (file.exists(na)){
         a <- read.table(na, header = TRUE, sep = ',')
         coopperc <- mean(a$coopPerc, na.rm = TRUE) 
@@ -95,7 +100,7 @@ for (probability in probabilities) {
   for (threat in threats){
     RR <- AA <- SS <- NN <- numeric()
     for (repl in 1:3){
-      na <- paste('punProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP', basepayoff, '.0tau', threat, 'p', probability, 'repl', repl, '.txt', sep = '')
+      na <- paste('punProps_test2PG_b3.0c1.0l0.5rho1.5i1e0mu0.01death0.1im1bP30t', threat, '.0p', prob_string, 'repl', repl, '.0.txt', sep = '')
       a <- if(file.exists(na)) read.table(na, header = TRUE, sep = ',') else {
         data.frame(R=NA, A=NA, S=NA, N=NA)
         print(paste('File not found:', na))
@@ -125,11 +130,9 @@ for (probability in probabilities) {
   points(x, As, pch = 25, bg = 'darkorange', col = 'black')
   lines(x, Ss, lty = 2, col = 'violet')
   points(x, Ss, pch = 23, bg = 'violet', col = 'black')
-  
   legend('topleft', c('R', 'N', 'A', 'S'), lty = c(2,2,2,2), 
          col = c('forestgreen', 'deepskyblue', 'darkorange', 'violet'), 
          pch = c(24, 22, 23, 25), pt.bg = c('forestgreen', 'deepskyblue', 'darkorange', 'violet'))
-  
   dev.off()
 }
 
@@ -147,8 +150,8 @@ final_plot <- magick::image_append(c(row1, row2),stack = T)
 
 x_pos <- 5
 y_pos <- 5
-x_increment <- 800 
-y_increment <- 600 
+x_increment <- 800
+y_increment <- 600
 
 # Annotating letters a-e with a loop
 letters <- c("a", "b", "c", "d", "e", "f")
@@ -156,9 +159,7 @@ for (i in 1:length(probabilities)) {
   # Calculate position
   posX <- x_pos + ((i - 1) %% 3) * x_increment
   posY <- y_pos + ((i - 1) %/% 3) * y_increment
-  
   location_str <- paste0("+", posX, "+", posY)
-  
   final_plot <- magick::image_annotate(final_plot, letters[i], location = location_str, size = 50, color = "black")
 }
 magick::image_write(final_plot, "../figures/composite_plot.png")
