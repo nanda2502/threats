@@ -343,7 +343,6 @@ def makePopulation(numCR, numCA, numCS, numCN, numDR, numDA, numDS, numDN, numOc
 		population.append(PGG_players.OdS_Agent())
 	for i in range(0,numOdN):
 		population.append(PGG_players.OdN_Agent())
-		
 	return population
 
 def spawnRandomAgent(types):
@@ -397,6 +396,4 @@ if __name__ == "__main__":
 			step()
 		stats.close_files()
 		print(f"Finished {threat} {probability} {replicateSim}.")
-		
-			
 
