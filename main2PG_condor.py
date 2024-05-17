@@ -167,6 +167,10 @@ def step():
 		if emptyAdjacent:
 			#### this is where the threat is currently implemented!
 			if rnd.random() < fitness(agent.total_payoff() + basePayoff - threat):
+				if(time % 100 ==0):
+					print(fitness(agent.total_payoff() + basePayoff - threat))
+					print(agent.total_payoff())
+
 				newAgent = makeAgentOfType(agent.agent_type)
 				grid.place_agent(newAgent, rnd.choice(emptyAdjacent))
 				addedAgents.append(newAgent)
