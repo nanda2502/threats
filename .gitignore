@@ -1,2 +1,4 @@
 .Rhistory
 venv/ 
+.idea/
+.mypy_cache/

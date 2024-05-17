@@ -16,8 +16,8 @@
 ## import matplotlib
 #matplotlib.use('TkAgg')
 
-from Tkinter import *
-import pylab as PL
+from Tkinter import * #type: ignore
+import pylab as PL #type: ignore
 
 class GUI:
 
