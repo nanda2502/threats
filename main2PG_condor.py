@@ -393,12 +393,12 @@ def makeAgentOfType(agentType):
 
 if __name__ == "__main__":
 	if GUI:
-		pycxsimulator.GUI().start(func=[init,draw,step])
+		pycxsimulator.GUI().start(func=[init,draw,step]) #type: ignore
 	else:
 		init()
-		if time%500 == 0:
-			print("time:", time)
-		while time < num_gens:
+		if time%500 == 0: #type: ignore
+			print("time:", time) #type: ignore
+		while time < num_gens: #type: ignore
 			step()
 		stats.close_files()
 		

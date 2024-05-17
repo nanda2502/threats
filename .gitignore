@@ -2,3 +2,4 @@
 venv/
 .idea/
 .Rhistory
+__pycache__/
