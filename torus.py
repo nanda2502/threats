@@ -13,7 +13,7 @@ class Torus:
 		self.nrows, self.ncols = nrows, ncols
 		self.neighborhood = neighborhood # list of tuples of x,y-offsets (relative to any grid location).
 		self.agentMatrix = [[None]*ncols for i in range(nrows)] # ncols x nrows matrix that has agent or None at each location
-		
+		self.agentThreatMatrix = [[None]*ncols for i in range(nrows)] # ncols x nrows matrix that has agent or None at each location
 		self.emptySites = [(i,j) for i in range(nrows) for j in range(ncols)]
 
 		self.neighborLocs = {} # for each location (x,y) key will hold neighboring locations as list
@@ -29,7 +29,7 @@ class Torus:
 	
 		#print "neighLocs.keys():", self.neighborLocs.keys()
 
-	def place_agent(self, agent, loc):
+	def place_agent(self, agent, loc, threat_level):
 		"""
 		Places agent on grid at (x,y).
 		"""
@@ -37,24 +37,33 @@ class Torus:
 		y = loc[1]
 		agent.gridlocation = (x,y)
 		self.agentMatrix[x][y] = agent
+		self.agentThreatMatrix[x][y] = threat_level
 		self.emptySites.remove((x,y))
 
 	def remove_agent(self, agent):
 		""" Removes agent from grid. """
 		self.agentMatrix[agent.gridlocation[0]][agent.gridlocation[1]] = None
+		self.agentThreatMatrix[agent.gridlocation[0]][agent.gridlocation[1]] = None
 		self.emptySites.append(agent.gridlocation)
 
 	def move_agent(self, agent, loc):
 		""" Moves agent to loc. """
 		self.agentMatrix[agent.gridlocation[0]][agent.gridlocation[1]] = None
-		self.emptySites.append(agent.gridlocation)		
-		
+		threat_level = self.agentThreatMatrix[agent.gridlocation[0]][agent.gridlocation[1]]
+		self.agentThreatMatrix[agent.gridlocation[0]][agent.gridlocation[1]] = None
+		self.emptySites.append(agent.gridlocation)
+				
 		self.agentMatrix[loc[0]][loc[1]] = agent
+		self.agentThreatMatrix[loc[0]][loc[1]] = threat_level
 		self.emptySites.remove(loc)
 		agent.gridlocation = loc
 		
 	def switch_agents(self, agent1, agent2):
 		""" Switches locations of agent1 and agent2. """
+		temp_threat_level = self.agentThreatMatrix[agent1.gridlocation[0]][agent1.gridlocation[1]]
+		self.agentThreatMatrix[agent1.gridlocation[0]][agent1.gridlocation[1]] = self.agentThreatMatrix[agent2.gridlocation[0]][agent2.gridlocation[1]]
+		self.agentThreatMatrix[agent2.gridlocation[0]][agent2.gridlocation[1]] = temp_threat_level
+
 		self.agentMatrix[agent1.gridlocation[0]][agent1.gridlocation[1]] = agent2
 		self.agentMatrix[agent2.gridlocation[0]][agent2.gridlocation[1]] = agent1
 

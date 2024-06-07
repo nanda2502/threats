@@ -36,7 +36,7 @@ GAMEMATRIX = [ [(b-c,b-c),(-c,b)] , [(b,-c),(0,0)] ]
 #GAMEMATRIX = [ [(2,2),(0,1)] , [(1,0),(1,1)] ]
 
 threat = float(sys.argv[1])
-probability = float(sys.argv[2])
+prob_high_threat = float(sys.argv[2])
 replicateSim = float(sys.argv[3])
 basePayoff = 30
 
@@ -70,7 +70,7 @@ for i in range(len(punTypes)):
 	pTypeToInt[punTypes[i]] = i
 
 runId = "test2PG_b" + str(b) + "c" + str(c) + "l" + str(l)+"rho"+str(rho)+"i"+str(infoLevel)+"e"+str(e)+"mu"+str(mu) + \
-		"death" + str(deathrate) + "im" + str(imRate) + "bP" + str(basePayoff) + "t" + str(threat) + "p" + str(probability) + "repl"+ str(replicateSim) # str(sys.argv[2]
+		"death" + str(deathrate) + "im" + str(imRate) + "bP" + str(basePayoff) + "t" + str(threat) + "p" + str(prob_high_threat) + "repl"+ str(replicateSim) # str(sys.argv[2]
 
 #runId = "2PG+_staghunt"+str(l)+"rho"+str(rho)+"i"+str(infoLevel)+"e"+str(e)+"mu"+str(mu)+"death"+str(deathrate)+"im"+str(imRate) \
 #			+"bP"+str(basePayoff)+"t"+str(threat)+str(sys.argv[2])
@@ -106,7 +106,7 @@ def step():
 	"""
 
 	global time, agents, grid	
-
+	
 	for agent in agents:
 		agent.reset()
 
@@ -115,7 +115,8 @@ def step():
 	randEmptySitesToPopulate = rnd.sample(emptySites,min(imRate,len(emptySites)))
 	for loc in randEmptySitesToPopulate: 
 		immigrant = spawnRandomAgent(types)
-		grid.place_agent(immigrant, loc)
+		threat_level = 1 if rnd.random() < prob_high_threat else 0
+		grid.place_agent(immigrant, loc, threat_level)
 		agents.append(immigrant)
 
 	#mutation
@@ -126,7 +127,8 @@ def step():
 			mutant = spawnRandomAgent(types)
 			agents.remove(agent)
 			grid.remove_agent(agent)
-			grid.place_agent(mutant, loc)
+			threat_level = 1 if rnd.random() < prob_high_threat else 0
+			grid.place_agent(mutant, loc, threat_level)
 			mutatedAgents.append(mutant)
 	agents.extend(mutatedAgents)	
 
@@ -164,13 +166,15 @@ def step():
 		# give agent chance (ptr) to clone into a random open adjacent spot, if it exists
 		emptyAdjacent = [loc for loc in grid.neighborLocs[agent.gridlocation] if grid.agentMatrix[loc[0]][loc[1]] == None]
 		if emptyAdjacent:
-			if rnd.random() < probability:
-				cost = threat/probability
+			threat_level = grid.agentThreatMatrix[agent.gridlocation[0]][agent.gridlocation[1]]
+			if threat_level == 1:
+				cost = 30
 			else:
-				cost = 0
+				cost = (threat - 30 * prob_high_threat) / (1 - prob_high_threat)
 			if rnd.random() < fitness(agent.total_payoff() + basePayoff - cost):
 				newAgent = makeAgentOfType(agent.agent_type)
-				grid.place_agent(newAgent, rnd.choice(emptyAdjacent))
+				threat_level = 1 if rnd.random() < prob_high_threat else 0
+				grid.place_agent(newAgent, rnd.choice(emptyAdjacent), threat_level)
 				addedAgents.append(newAgent)
 	agents.extend(addedAgents)
 	
