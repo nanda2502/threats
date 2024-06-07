@@ -123,4 +123,15 @@ class Torus:
 				agent.gridlocation = (row, column)
 				self.emptySites.remove((row, column))
 				
-
+	def pick_random_agents(self, num_agents, exclude_agent):
+			"""
+			Picks a fixed number of agents randomly, excluding a specific agent.
+			
+			:param num_agents: Number of agents to pick.
+			:param exclude_agent: The agent to exclude.
+			:return: List of randomly picked agents.
+			"""
+			all_agents = [self.agentMatrix[row][col] for row in range(self.nrows) for col in range(self.ncols) if self.agentMatrix[row][col] is not None and self.agentMatrix[row][col] != exclude_agent]
+			
+	
+			return random.sample(all_agents, num_agents)
