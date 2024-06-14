@@ -9,7 +9,6 @@
 
 class TwoPlayerGame:
 	def __init__(self, player1, player2, payoffmat, l, rho, infoProb, e):
-		
 		self.players = [ player1, player2 ]
 		self.payoffmat = payoffmat
 		self.opponents = {player1:player2, player2:player1}
@@ -26,7 +25,6 @@ class TwoPlayerGame:
 		
 		
 	def run(self):
-		
 		player1, player2 = self.players
 	
 		#print "---\ngame"

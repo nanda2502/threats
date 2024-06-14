@@ -137,10 +137,7 @@ def step():
 	####################### game phase
 	# each agent plays public goods games with all neighbors and gets payoffs, punishment also included
 	for agent in agents:
-		#print agent.gridlocation
-		neighbors = grid.get_neighbors(agent)
-		num_neighbors = len(neighbors)
-		players = grid.pick_random_agents(num_neighbors, agent)
+		players = grid.get_random_agents(agent)
 		players.append(agent)
 
 		for player in players:
