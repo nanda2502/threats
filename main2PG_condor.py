@@ -166,9 +166,16 @@ def step():
 		emptyAdjacent = [loc for loc in grid.neighborLocs[agent.gridlocation] if grid.agentMatrix[loc[0]][loc[1]] == None]
 		if emptyAdjacent:
 			#### this is where the threat is currently implemented!
-			if rnd.random() < fitness(agent.total_payoff() + basePayoff - threat):
+			num_neighbors = len(grid.get_neighbors(agent))
+			if rnd.random() < num_neighbors/4:
+				cost = 30
+			else:
+				
+
+
+			if rnd.random() < fitness(agent.total_payoff() + basePayoff - cost):
 				if(time % 100 ==0):
-					print(fitness(agent.total_payoff() + basePayoff - threat))
+					print(fitness(agent.total_payoff() + basePayoff - cost))
 					print(agent.total_payoff())
 
 				newAgent = makeAgentOfType(agent.agent_type)
