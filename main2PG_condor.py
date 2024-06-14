@@ -107,6 +107,8 @@ def step():
 	"""
 
 	global time, agents, grid	
+	
+
 
 	for agent in agents:
 		agent.reset()
@@ -130,7 +132,6 @@ def step():
 			grid.place_agent(mutant, loc)
 			mutatedAgents.append(mutant)
 	agents.extend(mutatedAgents)	
-
 	
 	coopPercs = list()
 	punPercs = list()
@@ -158,6 +159,9 @@ def step():
 	for agent in agents:
 		payList.append(agent.total_payoff())
 
+	avg_num_neighbors = grid.get_average_number_of_neighbors()
+	risk_global = avg_num_neighbors/4
+
 	##### reproduction - agents with empty adjacent spot get fitness chance to reproduce
 	rnd.shuffle(agents)
 	addedAgents = list()
@@ -167,12 +171,11 @@ def step():
 		if emptyAdjacent:
 			#### this is where the threat is currently implemented!
 			num_neighbors = len(grid.get_neighbors(agent))
-			if rnd.random() < num_neighbors/4:
+			risk = num_neighbors/4 
+			if rnd.random() < risk:
 				cost = 30
 			else:
-				
-
-
+				cost = (threat - 30 * risk_global) / (1 - risk_global)
 			if rnd.random() < fitness(agent.total_payoff() + basePayoff - cost):
 				if(time % 100 ==0):
 					print(fitness(agent.total_payoff() + basePayoff - cost))

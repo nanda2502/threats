@@ -122,5 +122,23 @@ class Torus:
 				self.agentMatrix[row][column] = agent
 				agent.gridlocation = (row, column)
 				self.emptySites.remove((row, column))
+	
+	def get_average_number_of_neighbors(self):
+			total_neighbors = 0
+			agent_count = 0
+
+			for i in range(self.nrows):
+				for j in range(self.ncols):
+					agent = self.agentMatrix[i][j]
+					if agent is not None:
+						agent_count += 1
+						neighbors = self.get_neighbors(agent)
+						total_neighbors += len(neighbors)
+
+			if agent_count == 0:
+				return 0  # Avoid division by zero if there are no agents.
+
+			average_neighbors = total_neighbors / agent_count
+			return average_neighbors
 				
 
