@@ -43,7 +43,9 @@ infoLevel = 1 #0.7#1#0.6#"auto" # probability of knowing co-player's punishment 
 e = 0 #0.05# 0.05#0.10 #05		# probability that knowledge is incorrect
 
 imRate = 1		# immigration rate - how many immigrants to add each step
+deathrate = 0.1
 reproductionrate = 0.90 # probability of reproduction
+
 
 mu = 0.1		# exploration rate
 
