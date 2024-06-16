@@ -1,3 +1,5 @@
-.Rhistory
+.mypy_cache/
 venv/
-results/
+.idea/
+.Rhistory
+__pycache__/
