@@ -164,7 +164,7 @@ def step():
 		emptyAdjacent = [loc for loc in grid.neighborLocs[agent.gridlocation] if grid.agentMatrix[loc[0]][loc[1]] == None]
 		if emptyAdjacent:
 			#### this is where the threat is currently implemented!
-			if rnd.random() > reproductionrate:
+			if rnd.random() < reproductionrate:
 				newAgent = makeAgentOfType(agent.agent_type)
 				grid.place_agent(newAgent, rnd.choice(emptyAdjacent))
 				addedAgents.append(newAgent)
