@@ -1,0 +1,5 @@
+.mypy_cache/
+venv/
+.idea/
+.Rhistory
+__pycache__/
