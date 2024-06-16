@@ -46,7 +46,7 @@ e = 0 #0.05# 0.05#0.10 #05		# probability that knowledge is incorrect
 
 imRate = 1		# immigration rate - how many immigrants to add each step
 deathrate = 0.10 # probability of death
-
+reproductionrate = 1 - deathrate
 mu = 0.01		# exploration rate
 
 neighborhood = [(-1,0),		# agents will interact with others in this neighborhood of x, y offsets
@@ -170,17 +170,10 @@ def step():
 		emptyAdjacent = [loc for loc in grid.neighborLocs[agent.gridlocation] if grid.agentMatrix[loc[0]][loc[1]] == None]
 		if emptyAdjacent:
 			#### this is where the threat is currently implemented!
-			num_neighbors = len(grid.get_neighbors(agent))
-			risk = num_neighbors/4 
-			if rnd.random() < risk:
-				cost = 30
-			else:
-				cost = (threat - 30 * risk_global) / (1 - risk_global)
-			if rnd.random() < fitness(agent.total_payoff() + basePayoff - cost):
+			if rnd.random() < reproductionrate:
 				if(time % 100 ==0):
 					print(fitness(agent.total_payoff() + basePayoff - cost))
 					print(agent.total_payoff())
-
 				newAgent = makeAgentOfType(agent.agent_type)
 				grid.place_agent(newAgent, rnd.choice(emptyAdjacent))
 				addedAgents.append(newAgent)
@@ -189,7 +182,13 @@ def step():
 	##### death
 	### this is where the threat should move to [Experiment 3]
 	for agent in agents:
-		if rnd.random() < deathrate:
+		num_neighbors = len(grid.get_neighbors(agent))
+		risk = num_neighbors/4 
+		if rnd.random() < risk:
+			cost = 30
+		else:
+			cost = (threat - 30 * risk_global) / (1 - risk_global)
+		if rnd.random() > fitness(agent.total_payoff() + basePayoff - cost):
 			agents.remove(agent)
 			grid.remove_agent(agent)
 
