@@ -166,20 +166,15 @@ def step():
 		if emptySites:
 			prob_empty = len(emptySites)/float(n*n)
 			if rnd.random() < prob_empty:
-				if rnd.random() < fitness(agent.total_payoff() + basePayoff - threat):
-					if(time % 100 ==0):
-						print(fitness(agent.total_payoff() + basePayoff - threat))
-						print(agent.total_payoff())
-
+				if rnd.random() < 1 - deathrate:
 					newAgent = makeAgentOfType(agent.agent_type)
 					grid.place_agent(newAgent, rnd.choice(emptySites))
 					addedAgents.append(newAgent)
 	agents.extend(addedAgents)
 	
 	##### death
-	### this is where the threat should move to [Experiment 3]
 	for agent in agents:
-		if rnd.random() < deathrate:
+		if rnd.random() > fitness(agent.total_payoff() + basePayoff - threat):
 			agents.remove(agent)
 			grid.remove_agent(agent)
 

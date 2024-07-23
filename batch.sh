@@ -2,7 +2,7 @@
 #SBATCH -J exp1_a
 #SBATCH -t 01:00:00
 #SBATCH -p thin
-#SBATCH -n 16
+#SBATCH -n 21
 
 module load 2023
 module load Python/3.11.3-GCCcore-12.3.0
