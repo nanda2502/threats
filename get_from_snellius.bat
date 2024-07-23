@@ -1,0 +1,1 @@
+scp -r njafarian@snellius.surf.nl:$HOME/home/results . 

@@ -1,6 +1,6 @@
 #! /bin/bash
 #SBATCH -J exp1_a
-#SBATCH -t 10:00
+#SBATCH -t 30:00
 #SBATCH -p thin
 #SBATCH -n 16
 
@@ -12,7 +12,7 @@ SCRIPT="$HOME/home/main2PG_condor.py"
 
 for threat in $(seq 0 5 30); do
         for replication in 1 2 3; do
-            python $SCRIPT $threat $probability $replication &
+            python $SCRIPT $threat $replication &
         done
     done
 

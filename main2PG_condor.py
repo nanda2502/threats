@@ -157,13 +157,13 @@ def step():
 	for agent in agents:
 		payList.append(agent.total_payoff())
 
-	##### reproduction - agents with empty adjacent spot get fitness chance to reproduce
+	##### reproduction - agents get fitness chance to reproduce
 	rnd.shuffle(agents)
 	addedAgents = list()
 	for agent in agents:
-		# give agent chance (ptr) to clone into a random open adjacent spot, if it exists
-		emptyAdjacent = [loc for loc in grid.neighborLocs[agent.gridlocation] if grid.agentMatrix[loc[0]][loc[1]] == None]
-		if emptyAdjacent:
+		# give agent chance (ptr) to clone into a random open spot, if it exists
+		emptySites = grid.get_empty_sites()
+		if emptySites:
 			#### this is where the threat is currently implemented!
 			if rnd.random() < fitness(agent.total_payoff() + basePayoff - threat):
 				if(time % 100 ==0):
@@ -171,7 +171,7 @@ def step():
 					print(agent.total_payoff())
 
 				newAgent = makeAgentOfType(agent.agent_type)
-				grid.place_agent(newAgent, rnd.choice(emptyAdjacent))
+				grid.place_agent(newAgent, rnd.choice(emptySites))
 				addedAgents.append(newAgent)
 	agents.extend(addedAgents)
 	
