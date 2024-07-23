@@ -164,15 +164,16 @@ def step():
 		# give agent chance (ptr) to clone into a random open spot, if it exists
 		emptySites = grid.get_empty_sites()
 		if emptySites:
-			#### this is where the threat is currently implemented!
-			if rnd.random() < fitness(agent.total_payoff() + basePayoff - threat):
-				if(time % 100 ==0):
-					print(fitness(agent.total_payoff() + basePayoff - threat))
-					print(agent.total_payoff())
+			prob_empty = len(emptySites)/float(n*n)
+			if rnd.random() < prob_empty:
+				if rnd.random() < fitness(agent.total_payoff() + basePayoff - threat):
+					if(time % 100 ==0):
+						print(fitness(agent.total_payoff() + basePayoff - threat))
+						print(agent.total_payoff())
 
-				newAgent = makeAgentOfType(agent.agent_type)
-				grid.place_agent(newAgent, rnd.choice(emptySites))
-				addedAgents.append(newAgent)
+					newAgent = makeAgentOfType(agent.agent_type)
+					grid.place_agent(newAgent, rnd.choice(emptySites))
+					addedAgents.append(newAgent)
 	agents.extend(addedAgents)
 	
 	##### death

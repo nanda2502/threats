@@ -135,3 +135,9 @@ class Torus:
 		random_agents = random.sample(all_agents, min(num_neighbors, len(all_agents)))
 
 		return random_agents
+
+	def get_grid_size(self):
+		"""
+		Returns size of grid.
+		"""
+		return (self.nrows * self.ncols)

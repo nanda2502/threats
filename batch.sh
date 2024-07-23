@@ -1,6 +1,6 @@
 #! /bin/bash
 #SBATCH -J exp1_a
-#SBATCH -t 30:00
+#SBATCH -t 01:00:00
 #SBATCH -p thin
 #SBATCH -n 16
 
